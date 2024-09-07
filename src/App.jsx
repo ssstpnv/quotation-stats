@@ -3,7 +3,7 @@ import './App.css';
 import useQuotationStats from './hooks/useQuotationStats.js';
 
 function App() {
-    const [isReady, getStats] = useQuotationStats();
+    const [open, isReady, getStats] = useQuotationStats();
     const [stats, setStats] = useState([]);
 
     const getUpdatedStats = () => {
@@ -12,7 +12,7 @@ function App() {
 
     return (
         <div className="app">
-            <button>
+            <button onClick={open}>
                 Старт
             </button>
             <button onClick={getUpdatedStats} disabled={!isReady}>

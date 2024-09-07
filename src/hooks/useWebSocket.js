@@ -1,28 +1,35 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 
 export default (url) => {
+    const [isOpen, setIsOpen] = useState(false);
     const [isReady, setReady] = useState(false);
     const [data, setData] = useState(null);
 
     const ws = useRef(null);
 
     useEffect(() => {
-        const socket = new WebSocket(url);
+        if (isOpen && !ws.current) {
+            const socket = new WebSocket(url);
 
-        socket.onopen = () => setReady(true);
-        socket.onclose = () => setReady(false);
-        socket.onmessage = (event) => setData(event.data);
+            socket.onopen = () => setReady(true);
+            socket.onclose = () => setReady(false);
+            socket.onmessage = (event) => setData(event.data);
 
-        ws.current = socket;
+            ws.current = socket;
 
-        // bind is needed to make sure `send` references correct `this`
-        ws.current.send.bind(ws.current);
-        ws.current.close.bind(ws.current);
+            // bind is needed to make sure `send` references correct `this`
+            ws.current.send.bind(ws.current);
+            ws.current.close.bind(ws.current);
+        }
 
         return () => {
-            socket.close();
+            ws.current?.close();
         }
+    }, [isOpen]);
+
+    const open = useCallback(() => {
+        setIsOpen(true);
     }, []);
 
-    return [isReady, data, ws.current?.send, ws.current?.close];
+    return [open, isReady, data, ws.current?.send, ws.current?.close];
 }

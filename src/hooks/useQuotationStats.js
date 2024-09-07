@@ -5,7 +5,7 @@ import QuotationStatsHandler from "../utils/QuotationStatsHandler.js";
 const statsHandler = new QuotationStatsHandler();
 
 export default () => {
-    const [isWebSocketReady, data] = useWebSocket(`wss://trade.termplat.com:8800/?password=${import.meta.env.VITE_WEBSOCKET_PASSWORD}`);
+    const [openWebSocket, isWebSocketReady, data] = useWebSocket(`wss://trade.termplat.com:8800/?password=${import.meta.env.VITE_WEBSOCKET_PASSWORD}`);
 
     useEffect(() => {
         if (isWebSocketReady) {
@@ -14,7 +14,7 @@ export default () => {
                 statsHandler.add(parsedData.value);
             }
         }
-    }, [isWebSocketReady]);
+    }, [isWebSocketReady, data]);
 
     const getStats = useCallback(() => {
         return {
@@ -26,5 +26,5 @@ export default () => {
         };
     }, []);
 
-    return [isWebSocketReady, getStats];
+    return [openWebSocket, isWebSocketReady, getStats];
 };
