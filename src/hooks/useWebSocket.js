@@ -3,7 +3,6 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 export default (url) => {
     const [isOpen, setIsOpen] = useState(false);
     const [isReady, setReady] = useState(false);
-    const [data, setData] = useState(null);
 
     const ws = useRef(null);
 
@@ -13,7 +12,6 @@ export default (url) => {
 
             socket.onopen = () => setReady(true);
             socket.onclose = () => setReady(false);
-            socket.onmessage = (event) => setData(event.data);
 
             ws.current = socket;
 
@@ -31,5 +29,11 @@ export default (url) => {
         setIsOpen(true);
     }, []);
 
-    return [open, isReady, data, ws.current?.send, ws.current?.close];
+    const onMessage = useCallback((callback) => {
+        if (ws.current) {
+            ws.current.onmessage = (event) => callback(JSON.parse(event.data));
+        }
+    }, []);
+
+    return [open, isReady, onMessage, ws.current?.send, ws.current?.close];
 }

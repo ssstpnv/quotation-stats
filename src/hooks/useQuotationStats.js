@@ -1,20 +1,23 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import useWebSocket from './useWebSocket.js';
 import QuotationStatsHandler from '../utils/QuotationStatsHandler.js';
 
 const statsHandler = new QuotationStatsHandler();
 
 export default () => {
-    const [openWebSocket, isWebSocketReady, data] = useWebSocket(`wss://trade.termplat.com:8800/?password=${import.meta.env.VITE_WEBSOCKET_PASSWORD}`);
+    const [openWebSocket, isWebSocketReady, onMessage] = useWebSocket(`wss://trade.termplat.com:8800/?password=${import.meta.env.VITE_WEBSOCKET_PASSWORD}`);
+    const [isReady, setIsReady] = useState(false);
 
     useEffect(() => {
         if (isWebSocketReady) {
-            const parsedData = JSON.parse(data);
-            if (parsedData?.value) {
-                statsHandler.add(parsedData.value);
-            }
+            onMessage((data) => {
+                if (data?.value) {
+                    statsHandler.add(data.value);
+                    setIsReady(true);
+                }
+            })
         }
-    }, [isWebSocketReady, data]);
+    }, [isWebSocketReady]);
 
     const getStats = useCallback(() => {
         if (statsHandler.getDataPointsCount() === 0) return {
@@ -36,5 +39,5 @@ export default () => {
         };
     }, []);
 
-    return [openWebSocket, isWebSocketReady, getStats];
+    return [openWebSocket, isReady, getStats];
 };

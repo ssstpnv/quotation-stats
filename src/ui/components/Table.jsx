@@ -20,7 +20,9 @@ const Table = ({ rowHeaders, rows }) => {
                 return (
                     <tr key={id}>
                         {Object.values(rest).map((rowCellValue) => (
-                            <td>{rowCellValue}</td>
+                            <td>
+                                {rowCellValue}
+                            </td>
                         ))}
                     </tr>
                 );
