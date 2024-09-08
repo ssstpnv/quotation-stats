@@ -1,45 +1,50 @@
 import { useState } from 'react';
 import './App.css';
 import useQuotationStats from './hooks/useQuotationStats.js';
+import Button from './ui/components/Button.jsx';
+import Table from './ui/components/Table.jsx';
 
 function App() {
     const [open, isReady, getStats] = useQuotationStats();
     const [stats, setStats] = useState([]);
 
     const getUpdatedStats = () => {
-        setStats([...stats, getStats()]);
+        const startTime = performance.now();
+        const updatedStats = getStats();
+        const statsCountTime = performance.now() - startTime;
+        setStats([
+            {
+                ...updatedStats,
+                statsCountTime: statsCountTime.toFixed(2)
+            },
+            ...stats,
+        ]);
     };
 
     return (
         <div className="app">
-            <button onClick={open}>
-                Старт
-            </button>
-            <button onClick={getUpdatedStats} disabled={!isReady}>
-                Статистика
-            </button>
-            <div>
-                <p>{isReady ? 'Connection established.' : 'Waiting to connect'}</p>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Mean</th>
-                            <th>Standard Deviation</th>
-                            <th>Mode</th>
-                            <th>Median</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {stats.map(({id, mean, standardDeviation, mode, median}) => (
-                            <tr key={id}>
-                                <td>{mean}</td>
-                                <td>{standardDeviation}</td>
-                                <td>{mode}</td>
-                                <td>{median}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+            <div className="app__content">
+                <div className="app__control-btn-row">
+                    <Button onClick={open} className="btn_fit">
+                        Старт
+                    </Button>
+                    <Button onClick={getUpdatedStats} disabled={!isReady}>
+                        Статистика
+                    </Button>
+                </div>
+                <div className="app__stats-table">
+                    <Table
+                        rowHeaders={[
+                            'Время операции',
+                            'Среднее',
+                            'Стандартное отклонение',
+                            'Мода',
+                            'Медиана',
+                            'Время потраченное на рассчеты, мс'
+                        ]}
+                        rows={stats}
+                    />
+                </div>
             </div>
         </div>
     );

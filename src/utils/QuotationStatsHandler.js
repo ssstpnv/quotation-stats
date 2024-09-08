@@ -58,8 +58,7 @@ class StatsHandler {
     // Get the variance
     getVariance() {
         if (this.n < 2) return 0;
-        return this.M2 / this.n;  // Population variance
-        // return this.M2 / (this.n - 1);  // Sample variance
+        return this.M2 / (this.n - 1);  // Sample variance
     }
 
     // Get the standard deviation
@@ -79,6 +78,11 @@ class StatsHandler {
         } else {
             return (this.maxHeap[0] + this.minHeap[0]) / 2;  // Average of two middle values
         }
+    }
+
+    // Get data points count
+    getDataPointsCount() {
+        return this.n;
     }
 }
 

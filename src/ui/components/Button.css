@@ -1,0 +1,23 @@
+.btn {
+    border: 1px solid black;
+    color: black;
+    background-color: lightgray;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+
+    &:hover:not(:disabled) {
+        background-color: white;
+    }
+
+    &:active:not(:disabled) {
+        background-color: gold;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+    }
+}
+
+.btn_fit {
+    height: fit-content;
+}
