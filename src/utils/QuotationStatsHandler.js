@@ -55,23 +55,19 @@ class StatsHandler {
         return this.mean;
     }
 
-    // Get the variance
     getVariance() {
         if (this.n < 2) return 0;
         return this.M2 / (this.n - 1);  // Sample variance
     }
 
-    // Get the standard deviation
     getStandardDeviation() {
         return Math.sqrt(this.getVariance());
     }
 
-    // Get the mode
     getMode() {
         return this.mode;
     }
 
-    // Get the median
     getMedian() {
         if (this.maxHeap.length > this.minHeap.length) {
             return this.maxHeap[0];  // Max-heap has the median if odd number of elements
@@ -80,7 +76,6 @@ class StatsHandler {
         }
     }
 
-    // Get data points count
     getDataPointsCount() {
         return this.n;
     }
